@@ -1,59 +1,71 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+// app/_layout.tsx
+
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import React, { useEffect } from 'react';
+import { AuthProvider, useAuth } from '../src/context/AuthContext';
+import { CartProvider } from '../src/context/CartContext';
 
-import { useColorScheme } from '@/components/useColorScheme';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
+function RootLayoutNav() {
+  // Obtenemos el nuevo estado de carga de la sesión
+  const { isAuthenticated, authLoading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  const [fontsLoaded, fontError] = useFonts({
+    'SpaceMono-Regular': require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
-    if (error) throw error;
-  }, [error]);
+    // Condición de salida súper robusta:
+    // No hacemos NADA hasta que la sesión de auth esté verificada Y las fuentes estén cargadas.
+    const isReady = (fontsLoaded || fontError) && !authLoading;
+    if (!isReady) {
+      return;
+    }
 
+    const inAuthGroup = segments[0] === '(auth)';
+
+    // Esta lógica ahora solo se ejecuta cuando estamos 100% seguros del estado de la app.
+    if (!isAuthenticated && !inAuthGroup) {
+      router.replace('/(auth)/login');
+    } else if (isAuthenticated && inAuthGroup) {
+      router.replace('/');
+    }
+  }, [isAuthenticated, authLoading, fontsLoaded, fontError, segments]); // Añadimos authLoading a las dependencias
+
+  // Ocultamos el Splash Screen solo cuando todo esté listo
   useEffect(() => {
-    if (loaded) {
+    const isReady = (fontsLoaded || fontError) && !authLoading;
+    if (isReady) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded, fontError, authLoading]);
 
-  if (!loaded) {
+  // Si no estamos listos, no renderizamos nada para evitar errores.
+  const isReady = (fontsLoaded || fontError) && !authLoading;
+  if (!isReady) {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack.Screen name="checkout" options={{ presentation: 'modal', title: 'Finalizar Compra' }} />
+    </Stack>
+  );
 }
 
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
+    <AuthProvider>
+      <CartProvider>
+        <RootLayoutNav />
+      </CartProvider>
+    </AuthProvider>
   );
 }

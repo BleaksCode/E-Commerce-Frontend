@@ -1,0 +1,77 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "test@ejemplo.com",
+      "password": "Test1234!",
+      "first_name": "Juan",
+      "last_name": "Pérez",
+      "phone": "+34123456789",
+      "created_at": "2025-01-01T00:00:00.000Z",
+      "is_active": "y"
+    },
+    {
+      "id": 2,
+      "email": "maria@ejemplo.com",
+      "password": "Maria1234!",
+      "first_name": "María",
+      "last_name": "García",
+      "phone": "+34987654321",
+      "created_at": "2025-01-02T00:00:00.000Z",
+      "is_active": "y"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Electrónica",
+      "description": "Artículos electrónicos"
+    },
+    {
+      "id": 2,
+      "name": "Ropa",
+      "description": "Artículos de vestir"
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Smartphone Pro X",
+      "description": "El último smartphone con la mejor tecnología.",
+      "price": 79999,
+      "compare_price": 89999,
+      "stock_quantity": 50,
+      "sku": "SPX-001",
+      "category_id": 1,
+      "images": [
+        { "id": 1, "product_id": 1, "image_path": "https://via.placeholder.com/400/0000FF/808080?Text=Smartphone1", "is_primary": true }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Auriculares Inalámbricos",
+      "description": "Sonido de alta fidelidad sin cables.",
+      "price": 14999,
+      "compare_price": 19999,
+      "stock_quantity": 120,
+      "sku": "AW-HD-2",
+      "category_id": 1,
+      "images": [
+        { "id": 2, "product_id": 2, "image_path": "https://via.placeholder.com/400/FF0000/FFFFFF?Text=Auriculares", "is_primary": true }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Camiseta de Algodón",
+      "description": "Camiseta cómoda y duradera, 100% algodón.",
+      "price": 2500,
+      "compare_price": 3000,
+      "stock_quantity": 200,
+      "sku": "TS-COT-M-BLK",
+      "category_id": 2,
+      "images": [
+        { "id": 3, "product_id": 3, "image_path": "https://via.placeholder.com/400/008000/FFFFFF?Text=Camiseta", "is_primary": true }
+      ]
+    }
+  ]
+}
