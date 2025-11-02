@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "mock-server": "node server.js"
+    "mock-server": "node server.js",
+    "build": "expo export:web"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",

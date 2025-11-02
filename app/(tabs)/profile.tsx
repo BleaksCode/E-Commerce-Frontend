@@ -2,11 +2,14 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Alert, Button, StyleSheet, Text, View } from 'react-native';
+// CORRECCIÓN: Importa desde el archivo de AuthContext, no desde el layout
+import { useAuth } from '../../src/context/AuthContext';
 import authService from '../../src/services/authService';
-import { useAuth } from '../_layout';
 
-export default function ProfileScreen() {
-  const { isAuthenticated, user, signOut } = useAuth();
+// Convertido a React.FC para consistencia
+const ProfileScreen: React.FC = () => {
+  // CORRECCIÓN: Cambia 'user' por 'userProfile'
+  const { isAuthenticated, userProfile, signOut } = useAuth();
   const router = useRouter();
 
   const handleLogout = () => {
@@ -18,9 +21,12 @@ export default function ProfileScreen() {
         { 
           text: 'Cerrar sesión', 
           onPress: async () => {
+            // Llama primero al servicio de logout (que limpia el token)
             await authService.logout();
+            // Llama a signOut del contexto (que limpia el estado de React)
             signOut();
             Alert.alert('Sesión cerrada', 'Has cerrado sesión correctamente');
+            // El _layout se encargará de redirigir al login
           }
         }
       ]
@@ -50,11 +56,13 @@ export default function ProfileScreen() {
       <View style={styles.infoContainer}>
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>Email:</Text>
-          <Text style={styles.infoValue}>{user?.email}</Text>
+          {/* CORRECCIÓN: Usa userProfile.email */}
+          <Text style={styles.infoValue}>{userProfile?.email}</Text>
         </View>
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>ID Usuario:</Text>
-          <Text style={styles.infoValue}>{user?.sub}</Text>
+          {/* CORRECCIÓN: Usa userProfile.sub */}
+          <Text style={styles.infoValue}>{userProfile?.sub}</Text>
         </View>
       </View>
 
@@ -117,3 +125,5 @@ const styles = StyleSheet.create({
     color: '#666'
   }
 });
+
+export default ProfileScreen;

@@ -7,14 +7,21 @@ import { getToken, removeToken, removeUser } from '../utils/authHelper';
 // - iOS Simulator: http://localhost:3000
 // - Android Emulator: http://10.0.2.2:3000
 // - Dispositivo físico: http://TU_IP_LOCAL:3000
+// const apiClient = axios.create({
+//   baseURL: 'http://localhost:3000', // Cambia al puerto de tu NestJS (generalmente 3000)
+//   timeout: 10000,
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// });
 const apiClient = axios.create({
-  baseURL: 'http://localhost:3000', // Cambia al puerto de tu NestJS (generalmente 3000)
+  // El prefijo "EXPO_PUBLIC_" es esencial para que Expo lo reconozca
+  baseURL: process.env.EXPO_PUBLIC_API_URL, 
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
-
 // Interceptor para agregar el token JWT a todas las peticiones
 apiClient.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
