@@ -10,7 +10,6 @@ import { CartProvider } from '../src/context/CartContext';
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
-  // Obtenemos el nuevo estado de carga de la sesión
   const { isAuthenticated, authLoading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
@@ -20,8 +19,8 @@ function RootLayoutNav() {
   });
 
   useEffect(() => {
-    // Condición de salida súper robusta:
-    // No hacemos NADA hasta que la sesión de auth esté verificada Y las fuentes estén cargadas.
+    // La condición de salida sigue siendo la misma:
+    // No hacemos nada hasta que la sesión de auth esté verificada Y las fuentes estén cargadas.
     const isReady = (fontsLoaded || fontError) && !authLoading;
     if (!isReady) {
       return;
@@ -29,13 +28,18 @@ function RootLayoutNav() {
 
     const inAuthGroup = segments[0] === '(auth)';
 
-    // Esta lógica ahora solo se ejecuta cuando estamos 100% seguros del estado de la app.
-    if (!isAuthenticated && !inAuthGroup) {
-      router.replace('/(auth)/login');
-    } else if (isAuthenticated && inAuthGroup) {
+    // --- ¡AQUÍ ESTÁ EL CAMBIO! ---
+    // Hemos ELIMINADO la lógica que te forzaba a ir al login.
+    // Ahora, solo nos preocupamos de una cosa:
+    // Si el usuario SÍ está autenticado Y ADEMÁS está en el grupo de login
+    // (por ejemplo, si acaba de iniciar sesión), lo llevamos a la página principal.
+    if (isAuthenticated && inAuthGroup) {
       router.replace('/');
     }
-  }, [isAuthenticated, authLoading, fontsLoaded, fontError, segments]); // Añadimos authLoading a las dependencias
+    
+    // Si no está autenticado, no hacemos nada, simplemente se queda donde está (en la Homepage).
+
+  }, [isAuthenticated, authLoading, fontsLoaded, fontError, segments]);
 
   // Ocultamos el Splash Screen solo cuando todo esté listo
   useEffect(() => {
