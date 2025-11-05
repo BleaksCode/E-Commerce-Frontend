@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "mock-server": "node server.js",
-    "build": "expo export:web",
+    "homepage": "https://BleaksCode.github.io/E-Commerce-Frontend",
+    "build": "expo export",
     "predeploy": "pnpm run build", 
     "deploy": "gh-pages -d dist"
   },
