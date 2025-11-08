@@ -47,6 +47,14 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <FontAwesome size={24} name="user" color={color} />,
         }}
       />
+      <Tabs.Screen
+        // Si tu carpeta es "product", usa "product/[id]"
+        // Si tu carpeta es "products", usa "products/[id]"
+        name="products/[id]" 
+        options={{
+          href: null, // <-- La magia está aquí
+        }}
+      />
     </Tabs>
   )
 }
